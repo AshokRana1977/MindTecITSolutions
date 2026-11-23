@@ -1,0 +1,38 @@
+@page
+@model MindtecFinance.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="d-flex align-items-center justify-content-center" style="min-height: 80vh; padding-top: 100px;">
+    <div class="card shadow-lg border-0" style="width: 100%; max-width: 400px; border-radius: 20px;">
+        <div class="card-body p-5">
+            <h3 class="text-center mb-4 fw-bold" style="color: var(--accent-color);">Secure Login</h3>
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-muted">User Name</label>
+                    <input asp-for="Input.UserName" class="form-control px-3" style="border-radius: 10px; padding: 12px;" placeholder="Admin" required />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold text-muted">Password</label>
+                    <input asp-for="Input.Password" type="password" class="form-control px-3" style="border-radius: 10px; padding: 12px;" placeholder="········" required />
+                </div>
+                @if (!ViewData.ModelState.IsValid) {
+                    <div class="alert alert-danger py-2 small border-0 mb-4" style="border-radius: 8px;">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            @error.ErrorMessage
+                        }
+                    </div>
+                }
+
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-orange py-3 fw-bold" style="border-radius: 10px;">Sign In</button>
+                </div>
+                <div class="text-center">
+                    <a href="/" class="small text-decoration-none text-muted">Return to website</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

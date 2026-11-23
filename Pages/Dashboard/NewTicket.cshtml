@@ -1,0 +1,480 @@
+@page
+@model MindtecFinance.Pages.Dashboard.NewTicketModel
+@{
+    ViewData["Title"] = "New Ticket";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container-fluid" style="padding-top: 20px; padding-bottom: 80px;">
+
+    <!-- Page Header -->
+    <div class="row mb-4 align-items-center bg-white shadow-sm py-3 px-4 mx-0" style="border-radius: 15px;">
+        <div class="col">
+            <h6 class="text-uppercase fw-bold text-muted mb-1"><i class="bi bi-dash-lg me-2 text-warning"></i>Operations</h6>
+            <h2 class="fw-bold mb-0">Create New Ticket</h2>
+        </div>
+        <div class="col-auto">
+            <a href="/Dashboard/Operations" class="btn btn-outline-secondary px-3 py-2" style="border-radius: 10px;">
+                <i class="bi bi-arrow-left me-2"></i>Back to Hub
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mx-3" style="border-radius: 12px;" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mx-3" style="border-radius: 12px;" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4 px-3">
+        <!-- Client Sidebar -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px; height: calc(100vh - 250px); overflow: hidden;">
+                <div class="card-header bg-white border-0 py-3 pb-0">
+                    <h5 class="fw-bold mb-3 mt-1 px-2">Select Client</h5>
+                    <div class="px-2 mb-3">
+                        <div class="input-group border shadow-sm" style="border-radius: 12px;">
+                            <span class="input-group-text bg-white border-0 ps-3">
+                                <i class="bi bi-search text-muted small"></i>
+                            </span>
+                            <input type="text" id="clientSearch" class="form-control border-0 py-2 ps-2" placeholder="Search customers..." style="box-shadow: none; font-size: 0.85rem;">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0" style="overflow-y: auto;">
+                    <div class="list-group list-group-flush">
+                        @foreach (var company in Model.Companies)
+                        {
+                            <div class="list-group-item list-group-item-action border-0 py-3 px-4 client-item d-flex justify-content-between align-items-center" 
+                                 onclick="loadClientDetails(@company.CompanyId, this)" style="cursor: pointer;">
+                                <div>
+                                    <div class="fw-bold mb-0">@company.CompanyName</div>
+                                    <div class="text-muted small">ID: @company.CompanyId</div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-orange-outline px-3" style="border-radius: 8px;">View</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket Creation Area -->
+        <div class="col-lg-8">
+            <div id="detailsContainer" class="h-100">
+                <!-- Initially Empty or Welcome Message -->
+                <div id="initialState" class="card border-0 shadow-sm h-100 d-flex align-items-center justify-content-center" style="border-radius: 20px; min-height: 400px;">
+                    <div class="text-center p-5">
+                        <div class="service-icon-bg mb-4 mx-auto" style="width: 80px; height: 80px; font-size: 2.5rem; background: rgba(234, 88, 12, 0.05); color: #ccc;">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <h4 class="fw-bold text-muted">Select a client to proceed</h4>
+                        <p class="text-muted mx-auto" style="max-width: 300px;">Choose a client from the list on the left to see their contact details and create a new support ticket.</p>
+                    </div>
+                </div>
+
+                <!-- Client Details & Form (Hidden Initially) -->
+                <div id="clientDetailsSection" style="display: none;">
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="fw-bold mb-0" id="selectedClientName">Client Name</h4>
+                                <div class="d-flex">
+                                    <a id="configBtn" href="#" class="btn btn-orange-outline px-4 py-2 me-2" style="border-radius: 12px;">
+                                        <i class="bi bi-gear me-2"></i>Configuration
+                                    </a>
+                                    <button id="viewTicketsBtn" class="btn btn-outline-info px-4 py-2 me-2" style="border-radius: 12px;" onclick="showAndScrollToTickets()">
+                                        <i class="bi bi-list-task me-2"></i>View Tickets
+                                    </button>
+                                    <button class="btn btn-orange px-4 py-2" data-bs-toggle="modal" data-bs-target="#ticketModal" style="border-radius: 12px;">
+                                        <i class="bi bi-plus-lg me-2"></i>Create New Ticket
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3">
+                                    <div class="p-3 bg-light" style="border-radius: 15px;">
+                                        <label class="text-muted small fw-bold text-uppercase d-block mb-1">Phone</label>
+                                        <span id="selectedClientPhone" class="fw-semibold text-dark">-</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3 bg-light" style="border-radius: 15px;">
+                                        <label class="text-muted small fw-bold text-uppercase d-block mb-1">Email</label>
+                                        <span id="selectedClientEmail" class="fw-semibold text-dark">-</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3 bg-light" style="border-radius: 15px;">
+                                        <label class="text-muted small fw-bold text-uppercase d-block mb-1">Website</label>
+                                        <span id="selectedClientWebsite" class="fw-semibold text-dark">-</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3 bg-light" style="border-radius: 15px;">
+                                        <label class="text-muted small fw-bold text-uppercase d-block mb-1">Address</label>
+                                        <span id="selectedClientAddress" class="fw-semibold text-dark small">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h6 class="text-uppercase fw-bold text-muted mb-3 small">Associated Contacts</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="bg-light">
+                                        <tr class="text-muted extra-small fw-bold">
+                                            <th>NAME</th>
+                                            <th>TITLE</th>
+                                            <th>EMAIL</th>
+                                            <th>PHONE</th>
+                                            <th class="text-center">TYPE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="contactsBody">
+                                        <!-- Contacts loaded via AJAX -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing Tickets Section (Auto-loaded) -->
+                <div id="existingTicketsSection" class="card border-0 shadow-sm" style="border-radius: 20px; display: none;">
+                    <div class="card-header bg-white border-0 py-4 px-4 d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">
+                            <i class="bi bi-ticket-perforated me-2 text-warning"></i>Existing Tickets
+                            <span id="totalTicketsCount" class="badge bg-secondary-subtle text-secondary ms-2" style="font-size: 0.8rem; vertical-align: middle;">0</span>
+                        </h5>
+                        <button type="button" class="btn btn-sm btn-light" onclick="loadExistingTickets(document.getElementById('ticketCompanyId').value)">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light">
+                                    <tr class="text-muted extra-small fw-bold">
+                                        <th class="ps-4">ID</th>
+                                        <th>SUMMARY</th>
+                                        <th>RAISED ON</th>
+                                        <th>PRIORITY</th>
+                                        <th>ASSIGNED TO</th>
+                                        <th>STATUS</th>
+                                        <th class="pe-4 text-end">ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ticketsBody">
+                                    <!-- Tickets loaded via AJAX -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ TICKET CREATION MODAL ═══════ -->
+<div class="modal fade" id="ticketModal" tabindex="-1" aria-labelledby="ticketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+            <form method="post">
+                <div class="modal-header border-0 px-4 pt-4 pb-0">
+                    <h5 class="modal-title fw-bold" id="ticketModalLabel">
+                        <i class="bi bi-ticket-perforated me-2 text-warning"></i>New Ticket Issue
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pt-3 pb-2">
+                    <input type="hidden" asp-for="InputTicket.CompanyID" id="ticketCompanyId" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Client</label>
+                        <input type="text" id="selectedClientDisplay" class="form-control bg-light border-0 py-2 px-3" readonly style="border-radius: 10px;">
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label small fw-bold text-muted">Summary / Short Title <span class="text-danger">*</span></label>
+                            <input asp-for="InputTicket.Summary" class="form-control py-2 px-3" placeholder="e.g. Server connection issue" style="border-radius: 10px;" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted">Priority</label>
+                            <select asp-for="InputTicket.Priority" class="form-select py-2 px-3" style="border-radius: 10px;">
+                                <option value="Low">Low</option>
+                                <option value="Normal" selected>Normal</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent / Critical</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Assigned To <span class="text-danger">*</span></label>
+                        <select asp-for="InputTicket.AssignedTo" class="form-select py-2 px-3" style="border-radius: 10px;" required>
+                            <option value="" disabled selected>Select User</option>
+                            @foreach (var user in Model.AppUsers)
+                            {
+                                <option value="@user">@user</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Issue Description</label>
+                        <textarea asp-for="InputTicket.Description" class="form-control py-2 px-3" rows="4" placeholder="Detailed explanation of the issue..." style="border-radius: 10px;"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Raised By</label>
+                        <input type="text" asp-for="InputTicket.RaisedBy" value="@User.Identity?.Name" class="form-control py-2 px-3" style="border-radius: 10px;" />
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pt-0 pb-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Cancel</button>
+                    <button type="submit" class="btn btn-orange px-4" style="border-radius: 10px;">
+                        <i class="bi bi-save me-2"></i>Save Ticket
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('clientSearch').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const items = document.querySelectorAll('.client-item');
+        
+        items.forEach(item => {
+            const name = item.querySelector('.fw-bold').innerText.toLowerCase();
+            const id = item.querySelector('.text-muted.small').innerText.toLowerCase();
+            
+            if (name.includes(searchTerm) || id.includes(searchTerm)) {
+                item.style.setProperty('display', 'flex', 'important');
+            } else {
+                item.style.setProperty('display', 'none', 'important');
+            }
+        });
+    });
+
+    async function loadClientDetails(id, element) {
+        // Highlight active item
+        document.querySelectorAll('.client-item').forEach(i => i.classList.remove('active-client'));
+        element.classList.add('active-client');
+
+        try {
+            console.log("Loading client details for ID:", id);
+            const response = await fetch(`/Dashboard/NewTicket?handler=Details&id=${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Received data:", data);
+                
+                // Show UI
+                const initialState = document.getElementById('initialState');
+                initialState.classList.add('d-none');
+                initialState.classList.remove('d-flex');
+
+                document.getElementById('clientDetailsSection').style.display = 'block';
+                
+                // Keep existing tickets hidden until button click
+                document.getElementById('existingTicketsSection').style.display = 'none';
+                document.getElementById('totalTicketsCount').innerText = '0';
+
+                // Handle both camelCase and PascalCase
+                const cName = data.companyName || data.CompanyName || 'No Name';
+                const cId = data.companyId || data.CompanyId || id;
+                const contactsList = data.contacts || data.Contacts || [];
+
+                // Populate Info
+                document.getElementById('selectedClientName').innerText = cName;
+                document.getElementById('selectedClientDisplay').value = cName;
+                document.getElementById('ticketCompanyId').value = cId;
+                
+                // Update Configuration Button
+                const configBtn = document.getElementById('configBtn');
+                const returnUrl = encodeURIComponent(`${window.location.pathname}?companyId=${cId}`);
+                configBtn.href = `/Dashboard/CoConfiguration?companyId=${cId}&returnUrl=${returnUrl}`;
+
+                // New Fields
+                document.getElementById('selectedClientPhone').innerText = data.companyPhone || data.CompanyPhone || '-';
+                document.getElementById('selectedClientEmail').innerText = data.companyEmail || data.CompanyEmail || '-';
+                document.getElementById('selectedClientWebsite').innerText = data.companyWebsite || data.CompanyWebsite || '-';
+                document.getElementById('selectedClientAddress').innerText = data.companyAddress || data.CompanyAddress || '-';
+
+                // Populate Contacts
+                const tbody = document.getElementById('contactsBody');
+                tbody.innerHTML = '';
+
+                if (contactsList.length > 0) {
+                    contactsList.forEach(contact => {
+                        const tr = document.createElement('tr');
+                        const isPrimary = contact.primaryContact || contact.PrimaryContact;
+                        tr.innerHTML = `
+                            <td class="fw-semibold">${contact.name || contact.Name}</td>
+                            <td class="text-muted small">${contact.title || contact.Title || '-'}</td>
+                            <td class="text-muted small">${contact.email || contact.Email || '-'}</td>
+                            <td class="text-muted small">${contact.phone || contact.Phone || '-'}</td>
+                            <td class="text-center">
+                                ${isPrimary 
+                                    ? '<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2">Primary</span>' 
+                                    : '<span class="badge bg-light text-muted border px-2">Secondary</span>'}
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted small">No contacts found for this client.</td></tr>';
+                }
+            } else {
+                console.error("Server returned error:", response.status);
+                alert("Error loading client details: " + response.status);
+            }
+        } catch (error) {
+            console.error("Error loading client details:", error);
+            alert("Failed to load client details. Check console for details.");
+        }
+    }
+
+    async function loadExistingTickets(companyId) {
+        if (!companyId) return;
+        
+        const tbody = document.getElementById('ticketsBody');
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5"><div class="spinner-border spinner-border-sm text-orange me-2"></div>Loading tickets...</td></tr>';
+
+        try {
+            const response = await fetch(`/Dashboard/NewTicket?handler=Tickets&companyId=${companyId}`);
+            if (response.ok) {
+                const tickets = await response.json();
+                tbody.innerHTML = '';
+                document.getElementById('totalTicketsCount').innerText = tickets.length;
+
+                if (tickets.length > 0) {
+                    tickets.forEach(ticket => {
+                        const tr = document.createElement('tr');
+                        
+                        let priorityBadge = '';
+                        switch(ticket.priority) {
+                            case 'Low': priorityBadge = '<span class="badge bg-secondary-subtle text-secondary px-2">Low</span>'; break;
+                            case 'Normal': priorityBadge = '<span class="badge bg-primary-subtle text-primary px-2">Normal</span>'; break;
+                            case 'High': priorityBadge = '<span class="badge bg-danger-subtle text-danger px-2">High</span>'; break;
+                            case 'Urgent': priorityBadge = '<span class="badge bg-danger text-white px-2">Urgent</span>'; break;
+                            default: priorityBadge = `<span class="badge bg-light text-muted px-2">${ticket.priority || '-'}</span>`;
+                        }
+
+                        const statusBadge = `<span class="badge ${ticket.status === 'Open' ? 'bg-success-subtle text-success' : 'bg-info-subtle text-info'} px-2">${ticket.status || 'Open'}</span>`;
+                        
+                        const raiseDate = new Date(ticket.raiseDate).toLocaleDateString('en-US', { 
+                            month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                        });
+
+                        tr.innerHTML = `
+                            <td class="ps-4 text-muted small">#${ticket.ticketID}</td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 250px;" title="${ticket.summary}">${ticket.summary}</div>
+                            </td>
+                            <td class="text-muted small">${raiseDate}</td>
+                            <td>${priorityBadge}</td>
+                            <td>
+                                <div class="text-muted small"><i class="bi bi-person me-1"></i>${ticket.assignedTo || 'Unassigned'}</div>
+                            </td>
+                            <td>${statusBadge}</td>
+                            <td class="pe-4 text-end">
+                                <a href="/Dashboard/UpdateLogs?id=${ticket.ticketID}&returnUrl=${encodeURIComponent(window.location.pathname + '?companyId=' + companyId)}" class="btn btn-sm btn-outline-secondary px-3" style="border-radius: 8px;">
+                                    <i class="bi bi-pencil me-1"></i>Update
+                                </a>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-muted"><i class="bi bi-ticket-perforated d-block fs-2 mb-2 opacity-25"></i>No tickets found for this client.</td></tr>';
+                }
+            }
+        } catch (error) {
+            console.error("Error loading tickets:", error);
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-danger small">Error loading tickets. Please try again.</td></tr>';
+        }
+    }
+
+    function showAndScrollToTickets() {
+        const companyId = document.getElementById('ticketCompanyId').value;
+        if (!companyId) return;
+
+        const ticketsSection = document.getElementById('existingTicketsSection');
+        ticketsSection.style.display = 'block';
+        
+        loadExistingTickets(companyId);
+        
+        ticketsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Auto-load client if companyId is in URL
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const companyId = urlParams.get('companyId');
+        if (companyId) {
+            const clientItems = document.querySelectorAll('.client-item');
+            clientItems.forEach(item => {
+                // Check if the onclick attribute contains the companyId
+                if (item.getAttribute('onclick').includes(companyId)) {
+                    item.click();
+                }
+            });
+        }
+    });
+</script>
+
+<style>
+    .client-item {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f8f9fa !important;
+    }
+    .client-item:hover {
+        background-color: rgba(234, 88, 12, 0.03);
+    }
+    .active-client {
+        background-color: rgba(234, 88, 12, 0.08) !important;
+        border-left: 4px solid var(--accent-color) !important;
+    }
+    .active-client .fw-bold {
+        color: var(--accent-color);
+    }
+    .btn-orange-outline {
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        background: transparent;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    .btn-orange-outline:hover {
+        background: var(--accent-color);
+        color: white;
+    }
+    .extra-small {
+        font-size: 0.7rem;
+        letter-spacing: 0.05rem;
+    }
+    .service-icon-bg {
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+</style>
+}

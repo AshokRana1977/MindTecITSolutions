@@ -1,0 +1,164 @@
+@page
+@model MindtecFinance.Pages.Dashboard.UpdateTicketModel
+@{
+    ViewData["Title"] = "Manage Tickets";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container" style="padding-top: 30px; padding-bottom: 80px;">
+
+    <!-- Page Header -->
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <h6 class="text-uppercase fw-bold text-muted mb-1"><i class="bi bi-dash-lg me-2 text-warning"></i>Operations</h6>
+            <h2 class="fw-bold mb-0">Existing Tickets</h2>
+        </div>
+        <div class="col-auto">
+            <a href="/Dashboard/NewTicket" class="btn btn-orange px-4 py-2" style="border-radius: 10px;">
+                <i class="bi bi-plus-lg me-2"></i>New Ticket
+            </a>
+        </div>
+    </div>
+    
+    <!-- Filters and Search -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form method="get" class="d-flex align-items-center gap-3">
+                <input type="hidden" asp-for="Filter" id="filterInput" />
+                
+                <div class="input-group" style="max-width: 300px;">
+                    <span class="input-group-text bg-white border-end-0" style="border-radius: 12px 0 0 12px;">
+                        <i class="bi bi-search text-muted small"></i>
+                    </span>
+                    <input type="number" asp-for="SearchId" class="form-control border-start-0 ps-0" placeholder="Search ID..." style="border-radius: 0 12px 12px 0; font-size: 0.9rem;">
+                    <button type="submit" class="btn btn-orange btn-sm px-3 ms-2" style="border-radius: 10px;">Search</button>
+                </div>
+                
+                <div class="btn-group p-1 bg-light shadow-sm" style="border-radius: 14px;">
+                    <button type="button" onclick="setFilter('Mine')" class="btn btn-sm px-4 py-2 @(Model.Filter == "Mine" ? "btn-white shadow-sm fw-bold" : "btn-link text-muted text-decoration-none")" style="border-radius: 10px;">
+                        My Tickets
+                    </button>
+                    <button type="button" onclick="setFilter('All')" class="btn btn-sm px-4 py-2 @(Model.Filter == "All" ? "btn-white shadow-sm fw-bold" : "btn-link text-muted text-decoration-none")" style="border-radius: 10px;">
+                        All Tickets
+                    </button>
+                </div>
+
+                @if (Model.SearchId.HasValue || Model.Filter != "Mine")
+                {
+                    <a href="/Dashboard/UpdateTicket" class="btn btn-link text-muted text-decoration-none extra-small">
+                        <i class="bi bi-x-circle me-1"></i>Clear
+                    </a>
+                }
+            </form>
+        </div>
+    </div>
+
+    <!-- Tickets Table -->
+    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr class="text-muted extra-small fw-bold">
+                            <th class="ps-4" style="width: 80px;">ID</th>
+                            <th>CLIENT</th>
+                            <th>SUMMARY</th>
+                            <th>RAISED ON</th>
+                            <th>PRIORITY</th>
+                            <th>ASSIGNED TO</th>
+                            <th>STATUS</th>
+                            <th class="pe-4 text-end">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Tickets.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-5">
+                                    <i class="bi bi-ticket-perforated d-block fs-1 mb-2 opacity-25"></i>
+                                    No tickets found.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var ticket in Model.Tickets)
+                        {
+                            <tr>
+                                <td class="ps-4 text-muted small">#@ticket.TicketID</td>
+                                <td>
+                                    <div class="fw-bold">@ticket.CompanyName</div>
+                                    <div class="text-muted extra-small">By: @ticket.RaisedBy</div>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 250px;" title="@ticket.Summary">@ticket.Summary</div>
+                                </td>
+                                <td class="text-muted small">@ticket.RaiseDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td>
+                                    @switch (ticket.Priority)
+                                    {
+                                        case "Low":
+                                            <span class="badge bg-secondary-subtle text-secondary px-2">Low</span>
+                                            break;
+                                        case "Normal":
+                                            <span class="badge bg-primary-subtle text-primary px-2">Normal</span>
+                                            break;
+                                        case "High":
+                                            <span class="badge bg-danger-subtle text-danger px-2">High</span>
+                                            break;
+                                        case "Urgent":
+                                            <span class="badge bg-danger text-white px-2">Urgent</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-light text-muted px-2">@ticket.Priority</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="text-muted small"><i class="bi bi-person me-1"></i>@ticket.AssignedTo</div>
+                                </td>
+                                <td>
+                                    <span class="badge @(ticket.Status == "Open" ? "bg-success-subtle text-success" : "bg-info-subtle text-info") px-2">
+                                        @ticket.Status
+                                    </span>
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <a href="/Dashboard/UpdateLogs?id=@ticket.TicketID&returnUrl=@(System.Net.WebUtility.UrlEncode("/Dashboard/UpdateTicket?Filter=" + Model.Filter))" class="btn btn-sm btn-outline-secondary px-3" style="border-radius: 8px;">
+                                        <i class="bi bi-pencil me-1"></i>Update
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .extra-small {
+        font-size: 0.72rem;
+        letter-spacing: 0.02rem;
+    }
+    .badge {
+        font-weight: 600;
+        border-radius: 6px;
+        font-size: 0.7rem;
+    }
+    .btn-white {
+        background-color: #fff;
+        color: #333;
+        border: none;
+    }
+    .btn-link:hover {
+        color: #f36c21 !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function setFilter(value) {
+            document.getElementById('filterInput').value = value;
+            document.getElementById('filterInput').form.submit();
+        }
+    </script>
+}

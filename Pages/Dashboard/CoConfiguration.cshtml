@@ -1,0 +1,303 @@
+@page
+@model MindtecFinance.Pages.Dashboard.CoConfigurationModel
+@{
+    ViewData["Title"] = "Company Configuration";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container-fluid" style="padding-top: 20px; padding-bottom: 80px;">
+
+    <!-- Page Header -->
+    <div class="row mb-4 align-items-center bg-white shadow-sm py-3 px-4 mx-0" style="border-radius: 15px;">
+        <div class="col">
+            <h6 class="text-uppercase fw-bold text-muted mb-1"><i class="bi bi-dash-lg me-2 text-warning"></i>Operations</h6>
+            <h2 class="fw-bold mb-0">Company Configuration</h2>
+        </div>
+        <div class="col-auto">
+            <a href="@(string.IsNullOrEmpty(Model.ReturnUrl) ? "/Dashboard/NewTicket" : Model.ReturnUrl)" class="btn btn-outline-secondary px-3 py-2" style="border-radius: 10px;">
+                <i class="bi bi-arrow-left me-2"></i>Back to Tickets
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mx-3" style="border-radius: 12px;" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mx-3" style="border-radius: 12px;" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4 px-3">
+        <!-- Section 1: Company & Contact Details -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">@Model.Company.CompanyName</h4>
+                        <span class="badge bg-light text-muted border px-3 py-2">ID: @Model.Company.CompanyId</span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light" style="border-radius: 15px;">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Phone</label>
+                                <span class="fw-semibold text-dark">@(Model.Company.CompanyPhone ?? "-")</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light" style="border-radius: 15px;">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Email</label>
+                                <span class="fw-semibold text-dark">@(Model.Company.CompanyEmail ?? "-")</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light" style="border-radius: 15px;">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Website</label>
+                                <span class="fw-semibold text-dark">@(Model.Company.CompanyWebsite ?? "-")</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light" style="border-radius: 15px;">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Address</label>
+                                <span class="fw-semibold text-dark small">@(Model.Company.CompanyAddress ?? "-")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-uppercase fw-bold text-muted mb-3 small">Associated Contacts</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="text-muted extra-small fw-bold">
+                                    <th>NAME</th>
+                                    <th>TITLE</th>
+                                    <th>EMAIL</th>
+                                    <th>PHONE</th>
+                                    <th class="text-center">TYPE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var contact in Model.Company.Contacts)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@contact.Name</td>
+                                        <td class="text-muted small">@(contact.Title ?? "-")</td>
+                                        <td class="text-muted small">@(contact.Email ?? "-")</td>
+                                        <td class="text-muted small">@(contact.Phone ?? "-")</td>
+                                        <td class="text-center">
+                                            @if (contact.PrimaryContact)
+                                            {
+                                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2">Primary</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-light text-muted border px-2">Secondary</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                                @if (Model.Company.Contacts.Count == 0)
+                                {
+                                    <tr><td colspan="5" class="text-center py-4 text-muted small">No contacts found.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Configuration Management -->
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">Service Configurations</h4>
+                        <button class="btn btn-orange px-4 py-2" data-bs-toggle="modal" data-bs-target="#configModal" onclick="prepareAdd()">
+                            <i class="bi bi-plus-lg me-2"></i>Add Configuration
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="text-muted extra-small fw-bold">
+                                    <th>TYPE</th>
+                                    <th>SERVICE NAME</th>
+                                    <th>SERVER</th>
+                                    <th>USERNAME</th>
+                                    <th>PASSWORD</th>
+                                    <th>DESCRIPTION</th>
+                                    <th class="text-center">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var config in Model.Configurations)
+                                {
+                                    <tr>
+                                        <td><span class="badge bg-secondary fw-normal">@(config.ConfigTypeName ?? "-")</span></td>
+                                        <td class="fw-bold text-orange">@config.ConfName</td>
+                                        <td><code class="text-dark">@(config.Server ?? "-")</code></td>
+                                        <td><span class="badge bg-light text-dark border fw-normal">@(config.UserName ?? "-")</span></td>
+                                        <td><span class="text-muted small">@(config.Password ?? "-")</span></td>
+                                        <td class="text-muted small">@(config.Description ?? "-")</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-icon-light" 
+                                                    data-config='@Json.Serialize(config)' 
+                                                    onclick="prepareEdit(this)" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#configModal">
+                                                <i class="bi bi-pencil-square text-primary"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                                @if (Model.Configurations.Count == 0)
+                                {
+                                    <tr><td colspan="6" class="text-center py-5 text-muted">
+                                        <div class="mb-2"><i class="bi bi-gear" style="font-size: 2rem; opacity: 0.2;"></i></div>
+                                        No configurations found for this company.
+                                    </td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Configuration Modal (Add/Edit) -->
+<div class="modal fade" id="configModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+            <form method="post" id="configForm">
+                <div class="modal-header border-0 px-4 pt-4 pb-0">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Add Configuration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pt-3 pb-2">
+                    <input type="hidden" asp-for="NewConfig.ConfigId" id="modalConfigId" />
+                    <input type="hidden" asp-for="NewConfig.CompanyId" value="@Model.Company.CompanyId" />
+                    <input type="hidden" asp-for="ReturnUrl" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Configuration Type <span class="text-danger">*</span></label>
+                        <select asp-for="NewConfig.ConfigTypeId" id="modalConfigType" class="form-select py-2 px-3" asp-items="Model.ConfigTypes" style="border-radius: 10px;" required>
+                            <option value="">-- Select Configuration Type --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Configuration Name <span class="text-danger">*</span></label>
+                        <input asp-for="NewConfig.ConfName" id="modalName" class="form-control py-2 px-3" placeholder="e.g. Email Sync, API Access" style="border-radius: 10px;" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Server Address</label>
+                        <input asp-for="NewConfig.Server" id="modalServer" class="form-control py-2 px-3" placeholder="e.g. smtp.gmail.com, 192.168.1.1" style="border-radius: 10px;" />
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted">User Name</label>
+                            <input asp-for="NewConfig.UserName" id="modalUser" class="form-control py-2 px-3" style="border-radius: 10px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted">Password</label>
+                            <input asp-for="NewConfig.Password" id="modalPass" class="form-control py-2 px-3" style="border-radius: 10px;" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">Description</label>
+                        <textarea asp-for="NewConfig.Description" id="modalDesc" class="form-control py-2 px-3" rows="3" placeholder="Additional details..." style="border-radius: 10px;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pt-0 pb-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Cancel</button>
+                    <button type="submit" id="modalSubmit" class="btn btn-orange px-4" style="border-radius: 10px;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function prepareAdd() {
+        document.getElementById('modalTitle').innerText = 'Add Configuration';
+        document.getElementById('modalSubmit').innerText = 'Add Configuration';
+        document.getElementById('modalConfigId').value = '0';
+        document.getElementById('modalConfigType').value = '';
+        document.getElementById('modalName').value = '';
+        document.getElementById('modalServer').value = '';
+        document.getElementById('modalUser').value = '';
+        document.getElementById('modalPass').value = '';
+        document.getElementById('modalDesc').value = '';
+        document.getElementById('configForm').action = '?handler=Add';
+    }
+
+    function prepareEdit(element) {
+        const config = JSON.parse(element.getAttribute('data-config'));
+        document.getElementById('modalTitle').innerText = 'Edit Configuration';
+        document.getElementById('modalSubmit').innerText = 'Update Configuration';
+        document.getElementById('modalConfigId').value = config.configId || config.ConfigId;
+        document.getElementById('modalConfigType').value = config.configTypeId || config.ConfigTypeId || '';
+        document.getElementById('modalName').value = config.confName || config.ConfName;
+        document.getElementById('modalServer').value = config.server || config.Server || '';
+        document.getElementById('modalUser').value = config.userName || config.UserName || '';
+        document.getElementById('modalPass').value = config.password || config.Password || '';
+        document.getElementById('modalDesc').value = config.description || config.Description || '';
+        document.getElementById('configForm').action = '?handler=Edit';
+    }
+</script>
+
+<style>
+    .btn-orange {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    .btn-orange:hover {
+        background-color: #ea580c;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
+    }
+    .text-orange {
+        color: var(--accent-color);
+    }
+    .btn-icon-light {
+        background: #f8f9fa;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+    .btn-icon-light:hover {
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border-color: #ddd;
+    }
+    .extra-small {
+        font-size: 0.7rem;
+        letter-spacing: 0.05rem;
+    }
+</style>
+}

@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+publish/
+
+# Visual Studio / user files
+.vs/
+*.user
+*.suo
+
+# Publish profiles (hosting URLs / credentials)
+Properties/PublishProfiles/
+
+# Environment-specific settings that hold connection strings / secrets
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
+appsettings.Local.json

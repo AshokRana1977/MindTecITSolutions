@@ -1,0 +1,434 @@
+@page
+@model MindtecFinance.Pages.Dashboard.FinancialsModel
+@{
+    ViewData["Title"] = "Financial Management";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container" style="padding-top: 30px; padding-bottom: 80px;">
+
+    <div class="row mb-5" data-aos="fade-up">
+        <div class="col-lg-6">
+            <h6 class="text-uppercase fw-bold text-muted mb-3"><i class="bi bi-dash-lg me-2 text-warning"></i>Finances</h6>
+            <h2 class="display-6 fw-bold">Income & Expenditure Dashboard</h2>
+        </div>
+        <div class="col-lg-6 text-lg-end">
+            <button class="btn btn-orange px-4 py-2" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+                <i class="bi bi-plus-lg me-2"></i>New Transaction
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+        <div class="card-body p-4">
+            <form method="get" class="row g-3 align-items-end" id="filterForm">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Date Filter</label>
+                    <select asp-for="DateFilter" class="form-select px-3" style="border-radius: 10px;" id="dateFilterSelect">
+                        <option value="CurrentMonth">Current Month</option>
+                        <option value="Custom">Custom Range</option>
+                    </select>
+                </div>
+                <div class="col-md-2 custom-date" style="display: @(Model.DateFilter == "Custom" ? "block" : "none")">
+                    <label class="form-label small fw-semibold text-muted">Start Date</label>
+                    <input asp-for="StartDate" type="date" class="form-control px-3" style="border-radius: 10px;" />
+                </div>
+                <div class="col-md-2 custom-date" style="display: @(Model.DateFilter == "Custom" ? "block" : "none")">
+                    <label class="form-label small fw-semibold text-muted">End Date</label>
+                    <input asp-for="EndDate" type="date" class="form-control px-3" style="border-radius: 10px;" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Record Type</label>
+                    <select asp-for="SharedFilter" class="form-select px-3" style="border-radius: 10px;">
+                        <option value="All">All Records</option>
+                        <option value="Shared">Shared Only</option>
+                        <option value="Individual">Individual Only</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-orange w-100 fw-bold" style="border-radius: 10px;">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Summary Widgets -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius: 15px;">
+                <p class="text-muted small fw-semibold text-uppercase mb-2">Total Income (Mth)</p>
+                <h3 class="fw-bold text-success">$@Model.MonthlyIncome.ToString("N2")</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius: 15px;">
+                <p class="text-muted small fw-semibold text-uppercase mb-2">Total Expense (Mth)</p>
+                <h3 class="fw-bold text-danger">$@Model.MonthlyExpense.ToString("N2")</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius: 15px;">
+                <p class="text-muted small fw-semibold text-uppercase mb-2">Current Balance</p>
+                <h3 class="fw-bold text-orange">$@((Model.MonthlyIncome - Model.MonthlyExpense).ToString("N2"))</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction List -->
+    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr class="text-muted small fw-bold">
+                            @{
+                                string getSortUrl(string col) => $"?DateFilter={Model.DateFilter}&StartDate={Model.StartDate?.ToString("yyyy-MM-dd")}&EndDate={Model.EndDate?.ToString("yyyy-MM-dd")}&SharedFilter={Model.SharedFilter}&SortColumn={col}&SortDirection={(Model.SortColumn == col && Model.SortDirection == "ASC" ? "DESC" : "ASC")}";
+                            }
+                            <th class="ps-4">
+                                <a href="@getSortUrl("Date")" class="text-decoration-none text-muted">
+                                    DATE @if(Model.SortColumn == "Date"){ <i class="bi bi-arrow-@(Model.SortDirection == "ASC" ? "up" : "down")"></i> }
+                                </a>
+                            </th>
+                            <th>
+                                <a href="@getSortUrl("Category")" class="text-decoration-none text-muted">
+                                    CATEGORY @if(Model.SortColumn == "Category"){ <i class="bi bi-arrow-@(Model.SortDirection == "ASC" ? "up" : "down")"></i> }
+                                </a>
+                            </th>
+                            <th>
+                                <a href="@getSortUrl("Description")" class="text-decoration-none text-muted">
+                                    DESCRIPTION @if(Model.SortColumn == "Description"){ <i class="bi bi-arrow-@(Model.SortDirection == "ASC" ? "up" : "down")"></i> }
+                                </a>
+                            </th>
+                            <th>
+                                <a href="@getSortUrl("Type")" class="text-decoration-none text-muted">
+                                    TYPE @if(Model.SortColumn == "Type"){ <i class="bi bi-arrow-@(Model.SortDirection == "ASC" ? "up" : "down")"></i> }
+                                </a>
+                            </th>
+                            <th>
+                                <a href="@getSortUrl("Shared")" class="text-decoration-none text-muted">
+                                    SHARED @if(Model.SortColumn == "Shared"){ <i class="bi bi-arrow-@(Model.SortDirection == "ASC" ? "up" : "down")"></i> }
+                                </a>
+                            </th>
+                            <th>
+                                <a href="@getSortUrl("OwnerName")" class="text-decoration-none text-muted">
+                                    OWNER @if(Model.SortColumn == "OwnerName"){ <i class="bi bi-arrow-@(Model.SortDirection == "ASC" ? "up" : "down")"></i> }
+                                </a>
+                            </th>
+                            <th>
+                                <a href="@getSortUrl("PaidByName")" class="text-decoration-none text-muted">
+                                    PAID BY @if(Model.SortColumn == "PaidByName"){ <i class="bi bi-arrow-@(Model.SortDirection == "ASC" ? "up" : "down")"></i> }
+                                </a>
+                            </th>
+                            <th>CONTR. DONE</th>
+                            <th class="text-end">
+                                <a href="@getSortUrl("Amount")" class="text-decoration-none text-muted">
+                                    AMOUNT @if(Model.SortColumn == "Amount"){ <i class="bi bi-arrow-@(Model.SortDirection == "ASC" ? "up" : "down")"></i> }
+                                </a>
+                            </th>
+                            <th class="pe-4 text-end">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var txn in Model.RecentTransactions)
+                        {
+                            <tr>
+                                <td class="ps-4">@txn.Date.ToString("MMM dd, yyyy")</td>
+                                <td><span class="badge bg-light text-dark fw-normal">@txn.Category</span></td>
+                                <td>@txn.Description</td>
+                                <td>
+                                    @if(txn.Type == "Income") {
+                                        <span class="text-success"><i class="bi bi-arrow-up-circle me-1"></i>Income</span>
+                                    } else {
+                                        <span class="text-danger"><i class="bi bi-arrow-down-circle me-1"></i>Expense</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if(txn.Shared) {
+                                        <i class="bi bi-people text-primary" title="Yes"></i>
+                                    } else {
+                                        <i class="bi bi-person text-secondary" title="No"></i>
+                                    }
+                                </td>
+                                <td><span class="badge bg-light text-dark fw-normal">@(string.IsNullOrEmpty(txn.OwnerName) ? "-" : txn.OwnerName)</span></td>
+                                <td><span class="badge bg-light text-dark fw-normal">@(string.IsNullOrEmpty(txn.PaidByName) ? "-" : txn.PaidByName)</span></td>
+                                <td>
+                                    @if(txn.Shared) {
+                                        @if(txn.SharedContributionDone) {
+                                            <i class="bi bi-check-circle-fill text-success" title="Done"></i>
+                                        } else {
+                                            <i class="bi bi-x-circle text-danger" title="Not Done"></i>
+                                        }
+                                    } else {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td class="text-end fw-bold @(txn.Type == "Income" ? "text-success" : "text-danger")">
+                                    @(txn.Type == "Income" ? "+" : "-") $@txn.Amount.ToString("N2")
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <button class="btn btn-sm btn-outline-secondary btn-edit-txn" 
+                                            data-id="@txn.Id"
+                                            data-date="@txn.Date.ToString("yyyy-MM-dd")"
+                                            data-type="@txn.Type"
+                                            data-category="@txn.Category"
+                                            data-amount="@txn.Amount"
+                                            data-description="@txn.Description"
+                                            data-shared="@(txn.Shared ? "true" : "false")"
+                                            data-ownerid="@txn.OwnerId"
+                                            data-paidbyid="@txn.PaidById"
+                                            data-contributiondone="@(txn.SharedContributionDone ? "true" : "false")"
+                                            data-bs-toggle="modal" data-bs-target="#editTransactionModal">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD TRANSACTION MODAL -->
+    <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <form method="post">
+                    <input type="hidden" asp-for="DateFilter" />
+                    <input type="hidden" asp-for="StartDate" />
+                    <input type="hidden" asp-for="EndDate" />
+                    <input type="hidden" asp-for="SharedFilter" />
+                    <input type="hidden" asp-for="SortColumn" />
+                    <input type="hidden" asp-for="SortDirection" />
+                    <div class="modal-header border-0 px-4 pt-4">
+                        <h5 class="modal-title fw-bold" id="addTransactionModalLabel">
+                            <i class="bi bi-plus-circle me-2 text-orange"></i>Add New Transaction
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-muted">Date</label>
+                            <input asp-for="Transaction.Date" type="date" class="form-control px-3" style="border-radius: 10px; padding: 12px;" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-semibold text-muted">Type</label>
+                                <select asp-for="Transaction.Type" class="form-select px-3" style="border-radius: 10px; padding: 12px;" required>
+                                    <option value="Income">Income</option>
+                                    <option value="Expense" selected>Expense</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-semibold text-muted">Category</label>
+                                <input asp-for="Transaction.Category" class="form-control px-3" style="border-radius: 10px; padding: 12px;" placeholder="e.g. Salary, Rent" required />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-muted">
+                                Amount
+                                <span class="ms-3 text-dark">
+                                    <input asp-for="Transaction.Shared" type="checkbox" id="addTxnShared" class="form-check-input" /> Shared
+                                </span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0" style="border-radius: 10px 0 0 10px;">$</span>
+                                <input asp-for="Transaction.Amount" type="number" step="0.01" class="form-control px-3 border-start-0" style="border-radius: 0 10px 10px 0; padding: 12px;" placeholder="0.00" required />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-muted">Owner</label>
+                                <select asp-for="Transaction.OwnerId" class="form-select px-3" style="border-radius: 10px; padding: 12px;">
+                                    <option value="">-- Select Owner --</option>
+                                    @foreach(var user in Model.ActiveUsers)
+                                    {
+                                        <option value="@user.Id">@user.UserName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-muted">Paid By</label>
+                                <select asp-for="Transaction.PaidById" class="form-select px-3" style="border-radius: 10px; padding: 12px;">
+                                    <option value="">-- Select Paid By --</option>
+                                    @foreach(var user in Model.ActiveUsers)
+                                    {
+                                        <option value="@user.Id">@user.UserName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="Transaction.SharedContributionDone" class="form-check-input" type="checkbox" id="addTxnSharedContr" disabled />
+                                <label class="form-check-label small fw-semibold text-muted" for="addTxnSharedContr">
+                                    Shared Contribution Done
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small fw-semibold text-muted">Description</label>
+                            <textarea asp-for="Transaction.Description" class="form-control px-3" style="border-radius: 10px; padding: 12px;" rows="2" placeholder="Optional details..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light px-4 py-2 fw-semibold" style="border-radius: 10px;" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-orange px-4 py-2 fw-bold" style="border-radius: 10px;">Save Transaction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT TRANSACTION MODAL -->
+    <div class="modal fade" id="editTransactionModal" tabindex="-1" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <form method="post" asp-page-handler="Edit">
+                    <input type="hidden" asp-for="DateFilter" />
+                    <input type="hidden" asp-for="StartDate" />
+                    <input type="hidden" asp-for="EndDate" />
+                    <input type="hidden" asp-for="SharedFilter" />
+                    <input type="hidden" asp-for="SortColumn" />
+                    <input type="hidden" asp-for="SortDirection" />
+                    <input type="hidden" asp-for="Transaction.Id" id="editTxnId" />
+                    <div class="modal-header border-0 px-4 pt-4">
+                        <h5 class="modal-title fw-bold" id="editTransactionModalLabel">
+                            <i class="bi bi-pencil-square me-2 text-orange"></i>Edit Transaction
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-muted">Date</label>
+                            <input asp-for="Transaction.Date" type="date" id="editTxnDate" class="form-control px-3" style="border-radius: 10px; padding: 12px;" required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-semibold text-muted">Type</label>
+                                <select asp-for="Transaction.Type" id="editTxnType" class="form-select px-3" style="border-radius: 10px; padding: 12px;" required>
+                                    <option value="Income">Income</option>
+                                    <option value="Expense">Expense</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-semibold text-muted">Category</label>
+                                <input asp-for="Transaction.Category" id="editTxnCategory" class="form-control px-3" style="border-radius: 10px; padding: 12px;" required />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-muted">
+                                Amount
+                                <span class="ms-3 text-dark">
+                                    <input asp-for="Transaction.Shared" type="checkbox" id="editTxnShared" class="form-check-input" /> Shared
+                                </span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0" style="border-radius: 10px 0 0 10px;">$</span>
+                                <input asp-for="Transaction.Amount" type="number" step="0.01" id="editTxnAmount" class="form-control px-3 border-start-0" style="border-radius: 0 10px 10px 0; padding: 12px;" required />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-muted">Owner</label>
+                                <select asp-for="Transaction.OwnerId" id="editTxnOwnerId" class="form-select px-3" style="border-radius: 10px; padding: 12px;">
+                                    <option value="">-- Select Owner --</option>
+                                    @foreach(var user in Model.ActiveUsers)
+                                    {
+                                        <option value="@user.Id">@user.UserName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold text-muted">Paid By</label>
+                                <select asp-for="Transaction.PaidById" id="editTxnPaidById" class="form-select px-3" style="border-radius: 10px; padding: 12px;">
+                                    <option value="">-- Select Paid By --</option>
+                                    @foreach(var user in Model.ActiveUsers)
+                                    {
+                                        <option value="@user.Id">@user.UserName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="Transaction.SharedContributionDone" id="editTxnSharedContr" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label small fw-semibold text-muted" for="editTxnSharedContr">
+                                    Shared Contribution Done
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small fw-semibold text-muted">Description</label>
+                            <textarea asp-for="Transaction.Description" id="editTxnDescription" class="form-control px-3" style="border-radius: 10px; padding: 12px;" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light px-4 py-2 fw-semibold" style="border-radius: 10px;" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-orange px-4 py-2 fw-bold" style="border-radius: 10px;">Update Transaction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var editButtons = document.querySelectorAll('.btn-edit-txn');
+            editButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    document.getElementById('editTxnId').value = this.getAttribute('data-id');
+                    document.getElementById('editTxnDate').value = this.getAttribute('data-date');
+                    document.getElementById('editTxnType').value = this.getAttribute('data-type');
+                    document.getElementById('editTxnCategory').value = this.getAttribute('data-category');
+                    document.getElementById('editTxnAmount').value = this.getAttribute('data-amount');
+                    document.getElementById('editTxnDescription').value = this.getAttribute('data-description');
+                    var isShared = this.getAttribute('data-shared') === 'true';
+                    document.getElementById('editTxnShared').checked = isShared;
+                    document.getElementById('editTxnOwnerId').value = this.getAttribute('data-ownerid') || '';
+                    document.getElementById('editTxnPaidById').value = this.getAttribute('data-paidbyid') || '';
+                    var contrEl = document.getElementById('editTxnSharedContr');
+                    contrEl.disabled = !isShared;
+                    if (!isShared) {
+                        contrEl.checked = false;
+                    } else {
+                        contrEl.checked = this.getAttribute('data-contributiondone') === 'true';
+                    }
+                });
+            });
+
+            var addTxnShared = document.getElementById('addTxnShared');
+            var addTxnSharedContr = document.getElementById('addTxnSharedContr');
+            if (addTxnShared && addTxnSharedContr) {
+                addTxnShared.addEventListener('change', function() {
+                    addTxnSharedContr.disabled = !this.checked;
+                    if (!this.checked) addTxnSharedContr.checked = false;
+                });
+            }
+
+            var editTxnShared = document.getElementById('editTxnShared');
+            var editTxnSharedContr = document.getElementById('editTxnSharedContr');
+            if (editTxnShared && editTxnSharedContr) {
+                editTxnShared.addEventListener('change', function() {
+                    editTxnSharedContr.disabled = !this.checked;
+                    if (!this.checked) editTxnSharedContr.checked = false;
+                });
+            }
+
+            var dateFilterSelect = document.getElementById('dateFilterSelect');
+            if(dateFilterSelect) {
+                dateFilterSelect.addEventListener('change', function() {
+                    var customDates = document.querySelectorAll('.custom-date');
+                    var displayStyle = this.value === 'Custom' ? 'block' : 'none';
+                    customDates.forEach(function(el) {
+                        el.style.display = displayStyle;
+                    });
+                });
+            }
+        });
+    </script>
+}
+

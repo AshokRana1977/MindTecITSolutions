@@ -1,0 +1,329 @@
+@page
+@model MindtecFinance.Pages.Dashboard.VendorsModel
+@{
+    ViewData["Title"] = "Vendor Management";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container" style="padding-top: 30px; padding-bottom: 80px;">
+
+    <!-- Page Header -->
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <h6 class="text-uppercase fw-bold text-muted mb-1"><i class="bi bi-dash-lg me-2 text-warning"></i>Operations</h6>
+            <h2 class="fw-bold mb-0">Vendor Management</h2>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-orange px-4 py-2" data-bs-toggle="modal" data-bs-target="#vendorModal" onclick="prepareAdd()">
+                <i class="bi bi-shop me-2"></i>New Vendor
+            </button>
+        </div>
+    </div>
+
+    <!-- Success / Error Messages -->
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show py-2 small border-0" style="border-radius: 10px;" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show py-2 small border-0" style="border-radius: 10px;" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Vendors Table -->
+    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr class="text-muted small fw-bold">
+                            <th class="ps-4" style="width: 50px;">ID</th>
+                            <th>VENDOR NAME</th>
+                            <th>PRIMARY CONTACT</th>
+                            <th>EMAIL</th>
+                            <th>PHONE</th>
+                            <th>ADDRESS</th>
+                            <th class="pe-4 text-end">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Vendors.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-5">
+                                    <i class="bi bi-shop d-block fs-1 mb-2 opacity-25"></i>
+                                    No vendors found. Click "New Vendor" to add one.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var vendor in Model.Vendors)
+                        {
+                            <tr>
+                                <td class="ps-4 text-muted small">@vendor.VendorId</td>
+                                <td class="fw-semibold">@vendor.VendorName</td>
+                                <td>
+                                    <span class="text-muted small">@vendor.PrimaryContactName</span>
+                                </td>
+                                <td class="text-muted small">@vendor.Email</td>
+                                <td class="text-muted small">@vendor.Phone</td>
+                                <td class="text-muted small">@vendor.Address</td>
+                                <td class="pe-4 text-end">
+                                    <button class="btn btn-sm btn-outline-secondary px-3" style="border-radius: 8px; font-size: 0.8rem;"
+                                            data-bs-toggle="modal" data-bs-target="#vendorModal"
+                                            onclick="loadAndEdit(@vendor.VendorId)">
+                                        <i class="bi bi-pencil me-1"></i>Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ UNIFIED VENDOR MODAL (ADD & EDIT) ═══════ -->
+<div class="modal fade" id="vendorModal" tabindex="-1" aria-labelledby="vendorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 16px;">
+            <form method="post" asp-page-handler="Save">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold" id="vendorModalLabel">
+                        <i class="bi bi-shop me-2 text-warning"></i><span id="formTitle">Add Vendor</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pt-3 pb-2">
+                    <input type="hidden" asp-for="InputVendor.VendorId" id="vendorIdHidden" />
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold text-muted">Vendor Name <span class="text-danger">*</span></label>
+                            <input asp-for="InputVendor.VendorName" id="vendorName" class="form-control" style="border-radius: 10px; padding: 10px 14px;" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold text-muted">Phone</label>
+                            <input asp-for="InputVendor.Phone" id="vendorPhone" class="form-control" style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold text-muted">Email</label>
+                            <input asp-for="InputVendor.Email" id="vendorEmail" type="email" class="form-control" style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold text-muted">Address</label>
+                            <textarea asp-for="InputVendor.Address" id="vendorAddress" class="form-control" style="border-radius: 10px; padding: 10px 14px;" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Websites Details Section -->
+                        <div class="col-lg-5 col-12 mb-4 border-end pe-lg-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="fw-bold mb-0 text-orange"><i class="bi bi-globe me-2"></i>Vendor Websites</h6>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addWebsiteRow()">
+                                    <i class="bi bi-plus me-1"></i>Add Website
+                                </button>
+                            </div>
+                            <div id="websitesContainer" class="mb-3 w-100">
+                                <!-- Dynamic Website Rows Go Here -->
+                            </div>
+                        </div>
+
+                        <!-- Contact Details Section -->
+                        <div class="col-lg-7 col-12 mb-4 ps-lg-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="fw-bold mb-0 text-orange"><i class="bi bi-person-lines-fill me-2"></i>Contact Details</h6>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addContactRow()">
+                                    <i class="bi bi-plus me-1"></i>Add Contact
+                                </button>
+                            </div>
+                            <div id="contactsContainer" class="mb-3 w-100">
+                                <!-- Dynamic Contact Rows Go Here -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                    <button type="button" class="btn btn-light px-4" style="border-radius: 10px;" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-orange px-4" style="border-radius: 10px;">
+                        <i class="bi bi-check-lg me-1"></i>Save Vendor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let contactIndex = 0;
+    let websiteIndex = 0;
+
+    function prepareAdd() {
+        document.getElementById('formTitle').innerText = "Add Vendor";
+        document.getElementById('vendorIdHidden').value = '0';
+        document.getElementById('vendorName').value = '';
+        document.getElementById('vendorPhone').value = '';
+        document.getElementById('vendorEmail').value = '';
+        document.getElementById('vendorAddress').value = '';
+        
+        document.getElementById('contactsContainer').innerHTML = '';
+        contactIndex = 0;
+        addContactRow(true); // Add one default primary contact row
+
+        document.getElementById('websitesContainer').innerHTML = '';
+        websiteIndex = 0;
+        addWebsiteRow(); // Add one default website row
+    }
+
+    async function loadAndEdit(id) {
+        document.getElementById('formTitle').innerText = "Edit Vendor";
+        document.getElementById('contactsContainer').innerHTML = '';
+        document.getElementById('websitesContainer').innerHTML = '';
+        contactIndex = 0;
+        websiteIndex = 0;
+
+        try {
+            const response = await fetch(`/Dashboard/Vendors?handler=Details&id=${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('vendorIdHidden').value = data.vendorId;
+                document.getElementById('vendorName').value = data.vendorName;
+                document.getElementById('vendorPhone').value = data.phone || '';
+                document.getElementById('vendorEmail').value = data.email || '';
+                document.getElementById('vendorAddress').value = data.address || '';
+
+                if (data.contacts && data.contacts.length > 0) {
+                    data.contacts.forEach(contact => {
+                        addContactRow(false, contact);
+                    });
+                } else {
+                    addContactRow(true);
+                }
+
+                if (data.websites && data.websites.length > 0) {
+                    data.websites.forEach(site => {
+                        addWebsiteRow(site);
+                    });
+                } else {
+                    addWebsiteRow();
+                }
+            }
+        } catch (error) {
+            console.error("Error loading vendor:", error);
+            alert("Failed to load vendor details.");
+        }
+    }
+
+    function addContactRow(isPrimary = false, existingData = null) {
+        const container = document.getElementById('contactsContainer');
+        const index = contactIndex++;
+        
+        const row = document.createElement('div');
+        row.className = "row bg-light p-3 mb-2 small-contact-row";
+        row.style.borderRadius = "12px";
+        row.style.border = "1px solid #e9ecef";
+
+        row.innerHTML = `
+            <div class="col-md-3">
+                <label class="form-label text-muted extra-small">Name *</label>
+                <input type="text" name="InputVendor.Contacts[${index}].Name" class="form-control form-control-sm" value="${existingData?.name || ''}" required />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label text-muted extra-small">Title</label>
+                <input type="text" name="InputVendor.Contacts[${index}].Title" class="form-control form-control-sm" value="${existingData?.title || ''}" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted extra-small">Email</label>
+                <input type="email" name="InputVendor.Contacts[${index}].Email" class="form-control form-control-sm" value="${existingData?.email || ''}" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted extra-small">Phone</label>
+                <input type="text" name="InputVendor.Contacts[${index}].Phone" class="form-control form-control-sm" value="${existingData?.phone || ''}" />
+            </div>
+            <div class="col-md-1 d-flex flex-column align-items-center justify-content-end pb-1">
+                <div class="form-check mb-1">
+                    <input class="form-check-input primary-radio" type="radio" name="PrimarySelection" 
+                           ${(existingData ? existingData.primaryContact : isPrimary) ? 'checked' : ''} 
+                           onclick="updatePrimaryFlags(${index})" title="Primary Contact">
+                </div>
+                <input type="hidden" id="primaryFlag_${index}" name="InputVendor.Contacts[${index}].PrimaryContact" 
+                       value="${(existingData ? existingData.primaryContact : isPrimary) ? 'true' : 'false'}" />
+                <button type="button" class="btn btn-sm btn-link text-danger p-0 mt-1" onclick="this.closest('.small-contact-row').remove()" title="Remove Contact">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(row);
+    }
+
+    function addWebsiteRow(existingData = null) {
+        const container = document.getElementById('websitesContainer');
+        const index = websiteIndex++;
+
+        const row = document.createElement('div');
+        row.className = "row bg-light p-3 mb-2 small-contact-row";
+        row.style.borderRadius = "12px";
+        row.style.border = "1px solid #e9ecef";
+
+        row.innerHTML = `
+            <div class="col-md-11">
+                <div class="mb-2">
+                    <label class="form-label text-muted extra-small">Website URL *</label>
+                    <input type="text" name="InputVendor.Websites[${index}].WebsiteUrl" class="form-control form-control-sm" placeholder="e.g. https://provider.com" value="${existingData?.websiteUrl || ''}" required />
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted extra-small">Username</label>
+                        <input type="text" name="InputVendor.Websites[${index}].UserName" class="form-control form-control-sm" value="${existingData?.userName || ''}" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted extra-small">Password</label>
+                        <input type="text" name="InputVendor.Websites[${index}].Password" class="form-control form-control-sm" value="${existingData?.password || ''}" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 d-flex flex-column align-items-center justify-content-center">
+                <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="this.closest('.small-contact-row').remove()" title="Remove Website">
+                    <i class="bi bi-trash fs-5"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(row);
+    }
+
+    function updatePrimaryFlags(selectedIndex) {
+        const flags = document.querySelectorAll('input[id^="primaryFlag_"]');
+        flags.forEach((f, i) => {
+            const rowIdx = f.id.replace('primaryFlag_', '');
+            f.value = (rowIdx == selectedIndex) ? 'true' : 'false';
+        });
+    }
+</script>
+
+<style>
+    .extra-small {
+        font-size: 0.72rem;
+        font-weight: 600;
+        margin-bottom: 3px;
+    }
+    .form-control-sm {
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+    .small-contact-row {
+        transition: 0.2s ease;
+    }
+    .small-contact-row:hover {
+        background-color: #f1f3f5 !important;
+    }
+</style>
+}

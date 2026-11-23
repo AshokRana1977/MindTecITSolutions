@@ -1,0 +1,430 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Managed IT Services Toronto";
+}
+
+<!-- HERO -->
+<section id="home" class="p-0 m-0">
+    <div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" style="min-height: 600px;">
+        <div class="carousel-inner" style="border-radius: 40px; overflow: hidden;">
+            <!-- Slide 1 -->
+            <div class="carousel-item active" style="background-image:url('@Url.Content("~/img/managed_Services.jpeg")'); background-size: cover; background-position: center;  position: relative;">
+                <div class="hero-container">
+                    <div data-aos="zoom-in-up" data-aos-duration="1000">
+                        <h1 class="hero-title" style="font-size: 2.8rem; margin-bottom: 15px;">Managed IT Services <br>& Business Solutions</h1>
+                        <p class="hero-subtitle mb-4">Reliable, scalable, and secure IT infrastructure tailored for modern, growing businesses.</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#services" class="btn btn-orange">Discover Solutions</a>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Additional slides follow... -->
+            <!-- Slide 2 -->
+            <div class="carousel-item" style="background-image:url('img/cloud.jpg');">
+                <div class="hero-container">
+                    <h2 class="hero-title" style="font-size: 3rem;">Scalable Cloud Integration</h2>
+                    <p class="hero-subtitle">
+                        Transition your data to flexible, high-availability cloud environments with
+                        enhanced security and significantly reduced operational costs.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="#contact" class="btn btn-orange">Talk to an Expert</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item" style="background-image:url('img/cybersecurity.jpg');">
+                <div class="hero-container">
+                    <h2 class="hero-title" style="font-size: 3rem;">Advanced Cyber Security</h2>
+                    <p class="hero-subtitle">
+                        Multi-layered protection, threat detection, and continuous monitoring to secure
+                        your entire Canadian operation.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="#services" class="btn btn-orange">Explore Solutions</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Controls (Optional, kept minimal) -->
+        <div class="carousel-indicators d-none d-md-flex" style="bottom: 5px;">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"
+                    aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                <h6 class="text-uppercase fw-bold text-muted mb-3"><i class="bi bi-dash-lg me-2 text-warning"></i>Premier MSP in Toronto</h6>
+                <h2 class="mb-4 display-6 fw-bold">Driving Canadian Businesses Forward Through Innovative IT</h2>
+                <p class="lead text-dark fs-6 mb-4">
+                    At Mindtec IT Solutions, a top-rated Mississauga / GTA MSP, we deliver reliable, scalable and secure IT services precisely tailored for modern, dynamic enterprises across Canada.
+                </p>
+                <p class="mb-4">
+                    Our mission is to continually simplify sophisticated technology, rapidly enhance productivity, and ensure unbroken business continuity through proactive and intelligent IT management.
+                </p>
+                <div class="d-flex align-items-center gap-4 mt-5">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-warning fs-4"></i> <span class="fw-semibold">24/7 Support</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-warning fs-4"></i> <span class="fw-semibold">Proven Security</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000">
+                <div class="about-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=800&q=80" alt="Tech Team" class="img-fluid">
+                    <div class="about-badge d-flex align-items-center gap-3">
+                        <i class="bi bi-award fs-1"></i>
+                        <div>
+                            <h5 class="mb-0 text-white">Top Rated</h5>
+                            <small class="text-white-50">Managed IT Provider</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="services-section">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="zoom-in" data-aos-duration="800">
+            <h6 class="text-uppercase fw-bold text-muted mb-3"><i class="bi bi-dash-lg me-2 text-warning"></i>Our Expertise</h6>
+            <h2 class="display-5 fw-bold mb-3">Professional Services</h2>
+            <p class="mx-auto" style="max-width: 600px;">Comprehensive digital management ensuring exceptionally smooth operations and a robust infrastructure.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Service Items (Same as MSP) -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-briefcase"></i></div>
+                    <h5>Managed IT Support</h5>
+                    <p class="text-muted small mb-4">End-to-end management ensuring maximum uptime and robust daily operations.</p>
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> 24/7 Toronto Helpdesk</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Proactive Monitoring</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Strategic Roadmapping</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Add other services here if needed, keeping short for brevity -->
+            <!-- Service 2 -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-telephone-inbound"></i></div>
+                    <h5>VoIP Communications</h5>
+                    <p class="text-muted small mb-4">Modern phone systems that dramatically lower costs and improve clarity.</p>
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> Cloud Phone Setup</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> MS Teams Voice</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Remote Call Analytics</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="800">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-printer"></i></div>
+                    <h5>Print Solutions</h5>
+                    <p class="text-muted small mb-4">
+                        Eliminate large upfront investments in purchasing printers, with our rental model.
+                    </p>
+                        @* Optimize your document workflows with reliable and efficient printing solutions. *@
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> Cost-Effective Solutions</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Hassle-Free Maintenance & Support</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Toner Management Included</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="900">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-globe"></i></div>
+                    <h5>Web Development / SCO</h5>
+                    <p class="text-muted small mb-4">Elevate your brand with modernized sites securely hosted in Canada.</p>
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> Responsive Design</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Local Canadian Hosting</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Application Security</li>
+                    </ul>
+                </div>
+            </div>
+
+
+
+            <!-- Service 5 -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="700">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-webcam"></i></div>
+                    <h5>Surveillance & Access</h5>
+                    <p class="text-muted small mb-4">Rigorous physical compliance monitoring for your local facilities.</p>
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> High-Def CCTV Systems</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Digital Access Control</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Facility Surveillance</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- Service 6 -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-diagram-3"></i></div>
+                    <h5>Network Infrastructure</h5>
+                    <p class="text-muted small mb-4">Implement robust topological design for seamless connectivity.</p>
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> Custom Fiber/Cat6 Cabling</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Gigabit Enterprise Wi-Fi</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Managed SD-WAN</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- Service 7 -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-pc-display"></i></div>
+                    <h5>Endpoint Management</h5>
+                    <p class="text-muted small mb-4">Complete maintenance of your physical and virtual devices.</p>
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> Desktop Provisioning</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Server Optimization</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Patch Management</li>
+                    </ul>
+                </div>
+            </div>
+
+
+
+            <!-- Service 8 -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-shield-check"></i></div>
+                    <h5>Cyber Security</h5>
+                    <p class="text-muted small mb-4">
+                        Multi-layered protection against complex ransomware and digital threats.
+                    </p>
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> Zero Trust Architecture</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> 24/7 Threat Hunting</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Compliance Auditing</li>
+                    </ul>
+                </div>
+            </div>
+
+
+
+            <!-- Service 9 -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-card text-center">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-cloud-arrow-up"></i></div>
+                    <h5>Cloud Solutions</h5>
+                    <p class="text-muted small mb-4">Secure cloud infrastructure tailored to Canadian data sovereignty.</p>
+                    <ul class="service-list text-start">
+                        <li><i class="bi bi-arrow-right-circle"></i> PIPEDA Compliant Cloud</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> M365 & Azure Migrations</li>
+                        <li><i class="bi bi-arrow-right-circle"></i> Scalable Hybrid Models</li>
+                    </ul>
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+
+
+    </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section id="why-choose-us" class="services-section" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="zoom-in" data-aos-duration="800">
+            <h6 class="text-uppercase fw-bold text-muted mb-3"><i class="bi bi-dash-lg me-2 text-warning"></i>Reliable IT Support That Delivers Results</h6>
+            <h2 class="display-5 fw-bold mb-3">Why Choose MindTec IT Solutions</h2>
+            <p class="mx-auto" style="max-width: 800px; font-size: 1.1rem;">At MindTec IT Solutions, We combine quality service, responsive support and cost-effective pricing to help businesses stay productive and protected. Whether you need one-time assistance or ongoing managed IT services, we're ready to help your business succeed.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Card 1 -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-card text-center h-100">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-pc-display"></i></div>
+                    <h5>Complete IT Services</h5>
+                    <p class="text-muted small mb-0">From day-to-day technical support to cloud systems, networking, cybersecurity and device management, we provide everything your business needs under one roof.</p>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-card text-center h-100">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-people"></i></div>
+                    <h5>Experienced Professionals</h5>
+                    <p class="text-muted small mb-0">Our skilled IT specialists bring real-world expertise and fast problem-solving to keep your system secure, effective and running smoothly.</p>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-card text-center h-100">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-gear"></i></div>
+                    <h5>Tailored Solutions</h5>
+                    <p class="text-muted small mb-0">Every business is different. We customize our services to match your goal, budget and technology requirements.</p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="service-card text-center h-100">
+                    <div class="service-icon-bg mx-auto"><i class="bi bi-graph-up-arrow"></i></div>
+                    <h5>Cost Effective</h5>
+                    <p class="text-muted small mb-0">As your company grows, our solutions grow with you, helping you expand without technology limitations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-5" data-aos="fade-right">
+                <div class="contact-info" style="border-top: 5px solid var(--accent-color);">
+                    <h3 class="mb-4">Get In Touch</h3>
+                    <p class="text-muted mb-5">Reach out to our specialists today to schedule an audit or to learn more about our managed IT offerings.</p>
+
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
+                        <div>
+                            <h6 class="mb-1">HQ Address</h6>
+                            <span class="text-muted">6705 Tomken Road #237, Mississauga<br /> Postal Code L6T 4N7</span>
+                        </div>
+                    </div>
+
+                    <a class="contact-item text-decoration-none" href="tel:+14377826494" style="color: inherit;" aria-label="Call Mindtec at (437) 782-6494">
+                        <div class="contact-icon"><i class="bi bi-telephone"></i></div>
+                        <div>
+                            <h6 class="mb-1">Call Us</h6>
+                            <span class="text-muted">(437) 782-6494</span>
+                        </div>
+                    </a>
+                    <div class="contact-item mb-0">
+                        <div class="contact-icon"><i class="bi bi-envelope"></i></div>
+                        <div>
+                            <h6 class="mb-1">Email Us</h6>
+                            <span class="text-muted">
+                                <a href="mailto:Info@mindtec.ca" class="text-decoration-none" style="color: inherit;">Info@mindtec.ca</a><br>
+                                <a href="mailto:Dheeraj@mindtec.ca" class="text-decoration-none" style="color: inherit;">Dheeraj@mindtec.ca</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="contact-info" style="border-top: 5px solid var(--accent-color);">
+                    <h3 class="mb-4">Schedule a Free Consultation</h3>
+                    <form id="consultationForm" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="userName" class="form-label text-muted small fw-semibold">User Name</label>
+                                <input type="text" name="UserName" class="form-control px-3" id="userName" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="mobileNumber" class="form-label text-muted small fw-semibold">Mobile Number</label>
+                                <input type="tel" name="MobileNumber" class="form-control px-3" id="mobileNumber" placeholder="+1 (555) 000-0000" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailAddress" class="form-label text-muted small fw-semibold">Email Address</label>
+                            <input type="email" name="Email" class="form-control px-3" id="emailAddress" placeholder="john@example.com" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="form-label text-muted small fw-semibold">Message</label>
+                            <textarea name="Message" class="form-control px-3 py-3" id="message" rows="4" placeholder="How can we help your business?" required></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-orange py-3 fs-6" id="submitBtn">Submit Request</button>
+                        </div>
+                        <div id="formMessage" class="mt-3 text-center alert @(!string.IsNullOrEmpty(Model.LblMessage) && Model.LblMessage.Contains("Sent") ? "alert-success" : "alert-danger") @(string.IsNullOrEmpty(Model.LblMessage) ? "d-none" : "") py-2 border-0 small fw-semibold" style="border-radius: 12px;">
+                            @Model.LblMessage
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('consultationForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const formMessage = document.getElementById('formMessage');
+            if (!form) return;
+
+            function show(cls, html) {
+                formMessage.className = 'mt-3 text-center alert ' + cls + ' py-2 border-0 small fw-semibold';
+                formMessage.style.borderRadius = '12px';
+                formMessage.innerHTML = html;
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Sending Mail...';
+                show('alert-info', '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Sending Mail...');
+
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(r => {
+                    if (!r.ok) throw new Error('Server returned HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(data => {
+                    if (data && data.success) {
+                        show('alert-success', data.message || 'Mail Sent');
+                        form.reset();
+                    } else {
+                        show('alert-danger', (data && data.message) ? data.message : 'Error sending mail');
+                    }
+                })
+                .catch(err => show('alert-danger', 'Error sending mail: ' + err.message))
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Submit Request';
+                });
+            });
+        });
+    </script>
+}

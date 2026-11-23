@@ -1,0 +1,97 @@
+@page
+@model MindtecFinance.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Master Dashboard";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container" style="padding-top: 30px; padding-bottom: 80px;">
+
+    <div class="row mb-5" data-aos="fade-up">
+        <div class="col-12 text-center">
+            <h6 class="text-uppercase fw-bold text-muted mb-3"><i class="bi bi-dash-lg me-2 text-warning"></i>Welcome Back, @User.Identity?.Name</h6>
+            <h2 class="display-5 fw-bold">Admin Central Management</h2>
+            <p class="text-muted">Manage your users, financials, and clients from one integrated platform.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- User Management Card -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card h-100 border-0 shadow-sm hover-up p-4" style="border-radius: 20px; transition: 0.3s;">
+                <div class="service-icon-bg mb-4" style="width: 70px; height: 70px; font-size: 2rem;">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h4 class="fw-bold mb-3">User Management</h4>
+                <p class="text-muted small mb-4">View, add, and manage administrative and staff access levels within the system.</p>
+                <div class="mt-auto">
+                    <a href="/Dashboard/Users" class="btn btn-orange w-100 py-2">Go to Users</a>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Clients Management Card -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="card h-100 border-0 shadow-sm hover-up p-4" style="border-radius: 20px; transition: 0.3s;">
+                <div class="service-icon-bg mb-4" style="width: 70px; height: 70px; font-size: 2rem;">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Clients Management</h4>
+                <p class="text-muted small mb-4">Monitor client accounts, services, and project-based financial interactions.</p>
+                <div class="mt-auto">
+                    <a href="/Dashboard/Clients" class="btn btn-orange w-100 py-2">Go to Clients</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vendors Management Card -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="350">
+            <div class="card h-100 border-0 shadow-sm hover-up p-4" style="border-radius: 20px; transition: 0.3s;">
+                <div class="service-icon-bg mb-4" style="width: 70px; height: 70px; font-size: 2rem;">
+                    <i class="bi bi-shop"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Vendors Management</h4>
+                <p class="text-muted small mb-4">Monitor and manage external vendors, suppliers, and procurement channels.</p>
+                <div class="mt-auto">
+                    <a href="/Dashboard/Vendors" class="btn btn-orange w-100 py-2">Go to Vendors</a>
+                </div>
+            </div>
+        </div>
+
+        @if (User.IsInRole("SA") || User.IsInRole("Admin"))
+        {
+            <!-- User Type Management Card -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="card h-100 border-0 shadow-sm hover-up p-4" style="border-radius: 20px; transition: 0.3s; border: 1px solid rgba(234, 88, 12, 0.1) !important;">
+                    <div class="service-icon-bg mb-4" style="width: 70px; height: 70px; font-size: 2rem; background: rgba(234, 88, 12, 0.1); color: var(--accent-color);">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">User Type Master</h4>
+                    <p class="text-muted small mb-4">Manage system user types and roles such as SA, Admin, Accountant, and Receptionist.</p>
+                    <div class="mt-auto">
+                        <a href="/Dashboard/UserTypeManagement" class="btn btn-orange w-100 py-2">Manage User Types</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (User.IsInRole("SA") || User.IsInRole("Admin"))
+        {
+            <!-- Configuration Type Management Card -->
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="card h-100 border-0 shadow-sm hover-up p-4" style="border-radius: 20px; transition: 0.3s; border: 1px solid rgba(234, 88, 12, 0.1) !important;">
+                    <div class="service-icon-bg mb-4" style="width: 70px; height: 70px; font-size: 2rem; background: rgba(234, 88, 12, 0.1); color: var(--accent-color);">
+                        <i class="bi bi-gear-fill"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Configuration Type Master</h4>
+                    <p class="text-muted small mb-4">Manage Configuration types, such as Server, Printer, Email, MS Office, VPN and Wifi.</p>
+                    <div class="mt-auto">
+                        <a href="/Dashboard/ConfigTypeManagement" class="btn btn-orange w-100 py-2">Manage Configuration Types</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

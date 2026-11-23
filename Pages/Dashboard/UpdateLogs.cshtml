@@ -1,0 +1,186 @@
+@page
+@model MindtecFinance.Pages.Dashboard.UpdateLogsModel
+@{
+    ViewData["Title"] = "Update Ticket Logs";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container" style="padding-top: 30px; padding-bottom: 80px;">
+
+    <!-- Back Button & Header -->
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <a href="@(string.IsNullOrEmpty(Model.ReturnUrl) ? "/Dashboard/UpdateTicket" : Model.ReturnUrl)" class="text-decoration-none text-muted small fw-bold mb-2 d-inline-block">
+                <i class="bi bi-arrow-left me-1"></i>Back to Tickets
+            </a>
+            <h2 class="fw-bold mb-0">Ticket Update Logs</h2>
+        </div>
+        <div class="col-auto">
+            <span class="badge @(Model.CurrentTicket.Status == "Open" ? "bg-success-subtle text-success" : "bg-info-subtle text-info") fs-6 px-3 py-2">
+                @Model.CurrentTicket.Status
+            </span>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <i class="bi bi-check-circle-fill me-2"></i>@Model.SuccessMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>@Model.ErrorMessage
+        </div>
+    }
+
+    <!-- Section 1: Ticket Info -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px; overflow: hidden;">
+        <div class="card-header bg-light border-0 py-3">
+            <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2 text-orange"></i>Ticket Information</h6>
+        </div>
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <label class="extra-small text-muted text-uppercase fw-bold d-block mb-1">Client Name</label>
+                    <div class="fw-bold">@Model.CurrentTicket.CompanyName</div>
+                </div>
+                <div class="col-md-8">
+                    <label class="extra-small text-muted text-uppercase fw-bold d-block mb-1">Summary</label>
+                    <div class="fw-bold">@Model.CurrentTicket.Summary</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="extra-small text-muted text-uppercase fw-bold d-block mb-1">Raised On</label>
+                    <div class="text-muted">@Model.CurrentTicket.RaiseDate.ToString("MMM dd, yyyy HH:mm")</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="extra-small text-muted text-uppercase fw-bold d-block mb-1">Priority</label>
+                    <div>
+                        @switch (Model.CurrentTicket.Priority)
+                        {
+                            case "Low": <span class="badge bg-secondary-subtle text-secondary">Low</span> break;
+                            case "Normal": <span class="badge bg-primary-subtle text-primary">Normal</span> break;
+                            case "High": <span class="badge bg-danger-subtle text-danger">High</span> break;
+                            case "Urgent": <span class="badge bg-danger text-white">Urgent</span> break;
+                            default: <span class="badge bg-light text-muted">@Model.CurrentTicket.Priority</span> break;
+                        }
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="extra-small text-muted text-uppercase fw-bold d-block mb-1">Assigned To</label>
+                    <div class="text-muted"><i class="bi bi-person me-1"></i>@Model.CurrentTicket.AssignedTo</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="extra-small text-muted text-uppercase fw-bold d-block mb-1">Current Status</label>
+                    <div class="text-muted"><i class="bi bi-flag me-1"></i>@Model.CurrentTicket.Status</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Action Form -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px; border-left: 5px solid #f36c21 !important;">
+        <div class="card-header bg-white border-0 py-3">
+            <h6 class="mb-0 fw-bold text-orange">Update Ticket Status & Log Action</h6>
+        </div>
+        <div class="card-body p-4">
+            <form method="post">
+                <input type="hidden" asp-for="NewLog.Ticketid" />
+                <input type="hidden" asp-for="ReturnUrl" />
+                
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold small">Action Log / Notes</label>
+                        <textarea asp-for="NewLog.Actionlog" class="form-control" rows="4" placeholder="Describe the action taken or progress made..." style="border-radius: 12px;"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small">Change Status</label>
+                        <select asp-for="NewLog.Status" class="form-select" style="border-radius: 10px;">
+                            <option value="Open">Open</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="On Hold">On Hold</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small">Reassign To</label>
+                        <select asp-for="NewLog.AssignedTo" class="form-select" style="border-radius: 10px;" asp-items="@(new SelectList(Model.AppUsers))">
+                            <option value="">-- Select User --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-orange w-100 py-2 fw-bold" style="border-radius: 10px;">
+                            <i class="bi bi-send me-2"></i>Submit Action Log
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Section 3: Existing Logs -->
+    <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+        <div class="card-header bg-light border-0 py-3">
+            <h6 class="mb-0 fw-bold">Action History</h6>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Logs.Count == 0)
+            {
+                <div class="p-5 text-center text-muted">
+                    <i class="bi bi-journals fs-1 d-block mb-3 opacity-25"></i>
+                    No action logs found for this ticket.
+                </div>
+            }
+            else
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var log in Model.Logs)
+                    {
+                        <div class="list-group-item p-4 border-0 border-bottom">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <span class="badge bg-light text-muted me-2 small">#@log.Logid</span>
+                                    <span class="fw-bold">@log.LogBy</span>
+                                    <span class="text-muted extra-small ms-2">@log.LogAT.ToString("MMM dd, yyyy HH:mm")</span>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-light text-muted extra-small me-2">Assigned: @log.AssignedTo</span>
+                                    <span class="badge @(log.Status == "Closed" ? "bg-dark" : "bg-info-subtle text-info") extra-small">@log.Status</span>
+                                </div>
+                            </div>
+                            <div class="text-secondary small mt-2 bg-light p-3" style="border-radius: 10px; border-left: 3px solid #dee2e6;">
+                                @log.Actionlog
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .extra-small {
+        font-size: 0.72rem;
+        letter-spacing: 0.05rem;
+    }
+    .text-orange { color: #f36c21; }
+    .btn-orange { 
+        background-color: #f36c21; 
+        border-color: #f36c21; 
+        color: white;
+    }
+    .btn-orange:hover {
+        background-color: #d15a1a;
+        border-color: #d15a1a;
+        color: white;
+    }
+    .badge {
+        border-radius: 6px;
+        font-weight: 600;
+        letter-spacing: 0.02rem;
+    }
+</style>

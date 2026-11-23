@@ -1,0 +1,62 @@
+@page
+@model MindtecFinance.Pages.Dashboard.OperationsModel
+@{
+    ViewData["Title"] = "Operations Hub";
+    Layout = "_DashboardLayout";
+}
+
+<div class="container" style="padding-top: 30px; padding-bottom: 80px;">
+
+    <div class="row mb-5" data-aos="fade-up">
+        <div class="col-12 text-center">
+            <h6 class="text-uppercase fw-bold text-muted mb-3"><i class="bi bi-dash-lg me-2 text-warning"></i>Operations Management</h6>
+            <h2 class="display-5 fw-bold">Ticketing & Issue Tracking</h2>
+            <p class="text-muted">Streamline your support workflow by creating and managing client tickets efficiently.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- New Tickets Card -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card h-100 border-0 shadow-sm hover-up p-4" style="border-radius: 20px; transition: 0.3s; border: 1px solid rgba(234, 88, 12, 0.1) !important;">
+                <div class="service-icon-bg mb-4" style="width: 70px; height: 70px; font-size: 2rem; background: rgba(234, 88, 12, 0.1); color: var(--accent-color);">
+                    <i class="bi bi-plus-circle"></i>
+                </div>
+                <h4 class="fw-bold mb-3">New Tickets</h4>
+                <p class="text-muted small mb-4">Initialize new support requests for existing clients by selecting their contacts and defining the issue details.</p>
+                <div class="mt-auto">
+                    <a href="/Dashboard/NewTicket" class="btn btn-orange w-100 py-2">Create New Ticket</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Existing Tickets Card -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="card h-100 border-0 shadow-sm hover-up p-4" style="border-radius: 20px; transition: 0.3s; border: 1px solid rgba(234, 88, 12, 0.1) !important;">
+                <div class="service-icon-bg mb-4" style="width: 70px; height: 70px; font-size: 2rem; background: rgba(234, 88, 12, 0.1); color: var(--accent-color);">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Update Existing Tickets</h4>
+                <p class="text-muted small mb-4">Track progress, update statuses, and modify details for active support issues already in the system.</p>
+                <div class="mt-auto">
+                    <a href="/Dashboard/UpdateTicket" class="btn btn-orange w-100 py-2">Manage Tickets</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Management Card -->
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="card h-100 border-0 shadow-sm hover-up p-4" style="border-radius: 20px; transition: 0.3s;">
+                <div class="service-icon-bg mb-4" style="width: 70px; height: 70px; font-size: 2rem;">
+                    <i class="bi bi-bank"></i>
+                </div>
+                <h4 class="fw-bold mb-3">Financial Management</h4>
+                <p class="text-muted small mb-4">Track incomes and expenditures. Generate month-wise reports and detailed financial statements.</p>
+                <div class="mt-auto">
+                    <a href="/Dashboard/Financials" class="btn btn-orange w-100 py-2">Go to Financials</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
