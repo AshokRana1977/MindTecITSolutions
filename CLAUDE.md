@@ -26,4 +26,4 @@ MindtecFinance: an ASP.NET Core 8 Razor Pages app (single project, `MindtecFinan
 
 ## Configuration
 
-`appsettings.json` holds the `DefaultConnection` string, with several environments (local, hosted demo, live) swapped by commenting lines in and out. The active line points at a local SQL Express instance. The file contains credentials for hosted databases. Do not copy them elsewhere, and do not commit changes that switch the active connection to a live DB.
+Connection strings are not stored in git. The tracked `appsettings.json` has a placeholder `DefaultConnection`. The real local string (plus commented alternatives for the hosted demo and live DBs) lives in `appsettings.Development.json`, and the live string in `appsettings.Production.json` on the server. Both files are git-ignored, as are `bin/`, `obj/`, `*.user` and `Properties/PublishProfiles/`. A fresh clone needs its own `appsettings.Development.json`. These files hold credentials for hosted databases: do not copy them elsewhere or add them to git. `Smtp:Password` is set via user-secrets or the `Smtp__Password` environment variable.
